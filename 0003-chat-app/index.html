@@ -4,15 +4,13 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Hello Node</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    rel="stylesheet" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script src="js/script.js"></script>
 </head>
 <body>
   <div class="container">
@@ -20,11 +18,11 @@
       <h3 class="text-primary">Messaging</h3>
       <br>
       <div class="form-group">
-        <input type="text" placeholder="Name" class="form-control">
+        <input type="text" placeholder="Name" class="form-control" id="sender">
       </div>
 
       <div class="form-group">
-        <input type="text" placeholder="Message" class="form-control">
+        <input type="text" placeholder="Message" class="form-control" id="content">
       </div>
       <button id="send-button" class="btn btn-success">Send</button>
     </div>
@@ -35,14 +33,3 @@
   </div>
 </body>
 </html>
-
-<script>
-  $(() => {
-    $("#send-button")
-    displayMessage({name: "nguyen", content: "Hello"})
-  })
-
-  function displayMessage(message) {
-    $("#message-display").append(`<div><strong>${message.name}: </strong>${message.content}<div>`)
-  }
-</script>
