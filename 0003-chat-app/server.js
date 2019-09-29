@@ -1,9 +1,15 @@
 const express = require('express');
 let app = express();
 
+// Set up HTTP server to work with Socket.io
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
+
+
 let bodyParser = require('body-parser'); // Use to parse request body to JSON
 
-app.listen(3000);
+// app.listen(3000);
+http.listen(3000);
 
 // Setting middleware
 app.use(express.static(__dirname));
