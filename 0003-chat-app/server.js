@@ -28,6 +28,14 @@ app.get('/messages', (req, res) => {
 app.post('/messages', (req, res) => {
   console.log(req.body);
   messages.push(req.body);
+
+  // Emit a 'message' event to client
+  io.emit('message', req.body);
   res.sendStatus(200);
+})
+
+// Make o 'connection' event to client
+io.on('connection', (socker) => {
+  console.log('user connected');
 })
 
