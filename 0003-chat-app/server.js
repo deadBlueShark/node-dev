@@ -48,6 +48,10 @@ app.get('/messages', (req, res) => {
   });
 })
 
+app.get('/user/:name/messages', async (req, res) => {
+  res.send(await Message.find({name: req.params.name}));
+})
+
 app.post('/messages', (req, res) => {
   console.log(req.body);
   // messages.push(req.body);
