@@ -1,5 +1,5 @@
 const express = require('express');
-let app = express();
+const app = express();
 
 // Set up HTTP server to work with Socket.io
 let http = require('http').Server(app);
@@ -39,6 +39,10 @@ let Message = mongoose.model('Message', messageSchema);
 //   { name: 'David', content: 'Hi'},
 //   { name : 'James', content: 'Nice to meet you' }
 // ]
+
+app.get('/hello', (req, res) => {
+  res.send('Hello World');
+})
 
 app.get('/messages', (req, res) => {
   Message.find({}).then(messages => {
