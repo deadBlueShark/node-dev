@@ -6,7 +6,7 @@ const feedbackRoute = require('./feedback')
 
 module.exports = () => {
   router.get('/', (req, res) => {
-    res.send('Homepage')
+    res.render('index')
   })
 
   router.use('/speakers', speakerRoute())
