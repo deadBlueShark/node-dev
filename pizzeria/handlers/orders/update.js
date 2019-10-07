@@ -2,10 +2,10 @@
 
 function updateOrder(orderId, order) {
   if (!orderId || !order || !order.pizzaId || !order.address) {
-    throw new Error('Invalid order.');
+    throw new Error('Invalid order.')
   }
 
-  return {};
+  return {}
 }
 
-module.exports = updateOrder;
+module.exports = updateOrder

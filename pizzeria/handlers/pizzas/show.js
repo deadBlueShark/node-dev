@@ -1,13 +1,13 @@
 'use strict'
 
-const pizzas = require('../../data/pizzas.json');
+const pizzas = require('../../data/pizzas.json')
 
 function getPizza(pizzaId) {
-  let pizza = pizzaId ? pizzas.find(e => e.id == pizzaId) : null;
+  let pizza = pizzaId ? pizzas.find(e => e.id == pizzaId) : null
   if (!pizza) {
-    throw new Error('Not found');
+    throw new Error('Not found')
   }
-  return pizza;
+  return pizza
 }
 
-module.exports = getPizza;
+module.exports = getPizza
