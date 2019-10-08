@@ -1,0 +1,7 @@
+{
+  "lambda": {
+    "role": "images-processing-executor",
+    "name": "images-processing",
+    "region": "ap-southeast-1"
+  }
+}
