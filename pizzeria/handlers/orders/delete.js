@@ -2,10 +2,10 @@
 
 function deleteOrder(orderId) {
   if (!orderId) {
-    throw new Error('No order ID provided');
+    throw new Error('No order ID provided')
   }
 
-  return {};
+  return {}
 }
 
-module.exports = updateOrder;
+module.exports = deleteOrder

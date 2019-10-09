@@ -1,9 +1,9 @@
 'use strict'
 
-const pizzas = require('../../data/pizzas.json');
+const pizzas = require('../../data/pizzas.json')
 
 function getPizzas() {
-  return pizzas;
+  return pizzas
 }
 
-module.exports = getPizzas;
+module.exports = getPizzas
