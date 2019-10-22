@@ -27,7 +27,7 @@ provider:
   region: ap-southeast-1
 
 # you can overwrite defaults here
-#  stage: dev
+  stage: prod
 
 
 # you can add statements to the Lambda function's IAM Role here
@@ -47,8 +47,8 @@ provider:
 #            - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment:
+    AUTHOR_NAME: Le Chi Nguyen
 
 # you can add packaging information here
 #package:
