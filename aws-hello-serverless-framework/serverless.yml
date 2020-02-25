@@ -22,12 +22,12 @@ org: deadblueshark
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs8.10
   profile: serverless-framework-deploy
   region: ap-southeast-1
 
 # you can overwrite defaults here
-  stage: prod
+  stage: dev
 
 
 # you can add statements to the Lambda function's IAM Role here
