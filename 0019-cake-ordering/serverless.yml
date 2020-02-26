@@ -1,12 +1,15 @@
+org: deadblueshark
+app: myapp
 service: service-cake-ordering
 plugins:
   # Use CloudFormation Pseudo Parameters in your Serverless project
   - serverless-pseudo-parameters
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: dev
   region: ap-southeast-1
+  timeout: ${self:provider.environment.LAMBDA_TIMEOUT}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -20,8 +23,9 @@ provider:
       Resource:
         - arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:provider.environment.ORDER_STREAM}
   environment:
-    ORDER_TABLE: orders
+    ORDER_TABLE: cake-orders
     ORDER_STREAM: order-events
+    LAMBDA_TIMEOUT: 900
 functions:
   createOrder:
     handler: handler.createOrder
@@ -34,12 +38,12 @@ resources:
     orderEventsStream:
       Type: AWS::Kinesis::Stream
       Properties:
-        Name: order-events
+        Name: ${self:provider.environment.ORDER_STREAM}
         ShardCount: 1
     ordersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: orders
+        TableName: ${self:provider.environment.ORDER_TABLE}
         AttributeDefinitions:
           - AttributeName: orderId
             AttributeType: S

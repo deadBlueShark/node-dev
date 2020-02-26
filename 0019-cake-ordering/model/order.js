@@ -2,7 +2,7 @@
 
 const { uuid } = require('uuidv4')
 const AWS = require('aws-sdk')
-const dynamo = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'})
+const dynamo = new AWS.DynamoDB.DocumentClient()
 const kinesis = new AWS.Kinesis()
 
 const ORDER_TABLE = process.env.ORDER_TABLE
@@ -17,32 +17,54 @@ module.exports.create = orderData => {
   return order
 }
 
-module.exports.placeOrder = order => {
+module.exports.placeOrder = async order => {
+  let createdOrder = _createOrder(order)
+  console.log('Created order: ', createdOrder)
+
+  if (createdOrder) {
+    console.log('Start push data to Kinesis Data Stream:')
+    _pushOrderToKinesisDataStream(order)
+  }
+}
+
+async function _createOrder(order) {
   let orderRecord = {
     TableName: ORDER_TABLE,
     Item: order
   }
 
-  dynamo.put(orderRecord, (err, data) => {
-    if (err) {
-      console.log('[DynamoDB] There were erros: ', err)
+  return await dynamo.put(orderRecord).promise().then((dynamoErr, dynamoData) => {
+    if (_isEmpty(dynamoErr)) {
+      console.log('Order created success: ', dynamoData)
+      return dynamoData
     } else {
-      console.log('Put data success: ', data)
-      console.log('Start push data to Kinesis Data Stream:')
-
-      let orderData = {
-        Data: JSON.stringify(order),
-        PartitionKey: order.orderId,
-        StreamName: ORDER_STREAM
-      }
-
-      kinesis.putRecord(orderData, (err, result) => {
-        if (err) {
-          console.log('[Kinesis] There were errors: ', err)
-        } else {
-          console.log('Push data to KDS success: ', result)
-        }
-      })
+      console.log('[DynamoDB] There were erros: ', dynamoErr)
+      return null
     }
   })
+}
+
+async function _pushOrderToKinesisDataStream(order) {
+  let orderData = {
+    Data: JSON.stringify(order),
+    PartitionKey: order.orderId,
+    StreamName: ORDER_STREAM
+  }
+
+  await kinesis.putRecord(orderData).promise().then((kinesisErr, kinesisData) => {
+    if (_isEmpty(kinesisErr)) {
+      console.log('Push data to KDS success: ', kinesisData)
+    } else {
+      console.log('[Kinesis] There were errors: ', kinesisErr)
+    }
+  })
+}
+
+function _isEmpty(obj) {
+  for(var key in obj) {
+    if(obj.hasOwnProperty(key)) {
+      return false
+    }
+  }
+  return true
 }

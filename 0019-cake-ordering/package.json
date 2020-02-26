@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "serverless-pseudo-parameters": "^2.5.0",
-    "uuidv4": "^6.0.3"
+    "uuidv4": "^6.0.5"
   }
 }

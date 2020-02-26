@@ -3,10 +3,18 @@
 const orderManager = require('./model/order')
 
 module.exports.createOrder = async event => {
-  const order = orderManager.create(event.body)
+  const order = orderManager.create(JSON.parse(event.body))
 
-  // Save order to DB
-  orderManager.placeOrder(order)
+  // let orderParamSample = {
+  //   customer: 'Le Chi Nguyen',
+  //   address: '85A PVD, DN',
+  //   coupon: 'APFREE',
+  //   items: [
+  //     { name: 'Pizza', amount: 3 }
+  //   ]
+  // }
+
+  await orderManager.placeOrder(order)
 
   return {
     statusCode: 200,
@@ -19,7 +27,4 @@ module.exports.createOrder = async event => {
       2
     )
   }
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 }
