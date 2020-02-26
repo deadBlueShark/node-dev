@@ -18,12 +18,12 @@ module.exports.create = orderData => {
 }
 
 module.exports.placeOrder = async order => {
-  let createdOrder = _createOrder(order)
+  let createdOrder = await _createOrder(order)
   console.log('Created order: ', createdOrder)
 
   if (createdOrder) {
     console.log('Start push data to Kinesis Data Stream:')
-    _pushOrderToKinesisDataStream(order)
+    await _pushOrderToKinesisDataStream(order)
   }
 }
 
@@ -33,7 +33,7 @@ async function _createOrder(order) {
     Item: order
   }
 
-  return await dynamo.put(orderRecord).promise().then((dynamoErr, dynamoData) => {
+  return dynamo.put(orderRecord).promise().then((dynamoErr, dynamoData) => {
     if (_isEmpty(dynamoErr)) {
       console.log('Order created success: ', dynamoData)
       return dynamoData
@@ -51,7 +51,7 @@ async function _pushOrderToKinesisDataStream(order) {
     StreamName: ORDER_STREAM
   }
 
-  await kinesis.putRecord(orderData).promise().then((kinesisErr, kinesisData) => {
+  return kinesis.putRecord(orderData).promise().then((kinesisErr, kinesisData) => {
     if (_isEmpty(kinesisErr)) {
       console.log('Push data to KDS success: ', kinesisData)
     } else {
