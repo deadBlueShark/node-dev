@@ -3,7 +3,7 @@
 const orderManager = require('./model/order')
 
 module.exports.createOrder = async event => {
-  const order = orderManager.create(JSON.parse(event.body))
+  let order = orderManager.create(JSON.parse(event.body))
 
   // let orderParamSample = {
   //   customer: 'Le Chi Nguyen',
@@ -18,13 +18,14 @@ module.exports.createOrder = async event => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Order created',
-        order: order
-      },
-      null,
-      2
-    )
+    body: JSON.stringify({message: 'Order created', order: order}, null, 2)
   }
+}
+
+module.exports.fulfillOrder = async event => {
+  let params = JSON.parse(event.body)
+  let orderId = params.orderId
+  let fulfillmentId = params.fulfillmentId
+
+  orderManager.fulfillOrder(orderId, fulfillmentId)
 }

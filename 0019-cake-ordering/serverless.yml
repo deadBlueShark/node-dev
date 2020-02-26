@@ -33,6 +33,13 @@ functions:
       - http:
           path: order/create
           method: post
+# functions:
+#   fulfillOrder:
+#     handler: handler.fulfillOrder
+#     events:
+#       - http:
+#           path: order/fulfill
+#           method: patch
 resources:
   Resources:
     orderEventsStream:

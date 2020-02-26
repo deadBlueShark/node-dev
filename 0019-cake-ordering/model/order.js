@@ -27,6 +27,25 @@ module.exports.placeOrder = async order => {
   }
 }
 
+module.exports.fulfillOrder = async (orderId, fulfillmentId) => {
+  let params = {
+    TableName: ORDER_TABLE,
+    Key: { orderId },
+    UpdateExpression: 'SET fulfillmentId = :fId, fulfillDate = :fDate, event = :event',
+    ExpressionAttributeValues: {
+      ':fId': fulfillmentId,
+      ':fDate': Date.now(),
+      ':event': 'order_fulfilled'
+    }
+  }
+
+  dynamo.update(params).promise().then((data) => {
+    console.log('Update success: ', data)
+  }).catch((err) => {
+    console.log('Err: ', err)
+  })
+}
+
 async function _createOrder(order) {
   let orderRecord = {
     TableName: ORDER_TABLE,
@@ -34,6 +53,8 @@ async function _createOrder(order) {
   }
 
   return dynamo.put(orderRecord).promise().then((dynamoErr, dynamoData) => {
+    console.log('ERR: ', dynamoErr)
+    console.log('DATA: ', dynamoData)
     if (_isEmpty(dynamoErr)) {
       console.log('Order created success: ', dynamoData)
       return dynamoData
