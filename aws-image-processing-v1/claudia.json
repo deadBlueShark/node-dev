@@ -1,7 +1,0 @@
-{
-  "lambda": {
-    "role": "image-processing-v2-executor",
-    "name": "image-processing-v2",
-    "region": "ap-southeast-1"
-  }
-}
