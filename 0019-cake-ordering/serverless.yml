@@ -1,0 +1,56 @@
+org: deadblueshark
+app: myapp
+service: service-cake-ordering
+plugins:
+  # Use CloudFormation Pseudo Parameters in your Serverless project
+  - serverless-pseudo-parameters
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: ap-southeast-1
+  timeout: ${self:provider.environment.LAMBDA_TIMEOUT}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource:
+        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:provider.environment.ORDER_TABLE}
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource:
+        - arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:provider.environment.ORDER_STREAM}
+  environment:
+    ORDER_TABLE: cake-orders
+    ORDER_STREAM: order-events
+    LAMBDA_TIMEOUT: 900
+functions:
+  createOrder:
+    handler: handler.createOrder
+    events:
+      - http:
+          path: order/create
+          method: post
+resources:
+  Resources:
+    orderEventsStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:provider.environment.ORDER_STREAM}
+        ShardCount: 1
+    ordersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.ORDER_TABLE}
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+        #BillingMode: PAY_PER_REQUEST
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
