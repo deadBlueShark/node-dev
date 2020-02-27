@@ -28,4 +28,8 @@ module.exports.fulfillOrder = async event => {
   let fulfillmentId = params.fulfillmentId
 
   orderManager.fulfillOrder(orderId, fulfillmentId)
+  return {
+    statusCode: 200,
+    body: JSON.stringify({message: 'Order fulfilled'}, null, 2)
+  }
 }

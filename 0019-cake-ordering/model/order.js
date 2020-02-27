@@ -18,13 +18,10 @@ module.exports.create = orderData => {
 }
 
 module.exports.placeOrder = async order => {
-  let createdOrder = await _createOrder(order)
-  console.log('Created order: ', createdOrder)
+  await _createOrder(order)
 
-  if (createdOrder) {
-    console.log('Start push data to Kinesis Data Stream:')
-    await _pushOrderToKinesisDataStream(order)
-  }
+  console.log('[Order Created] Start push data to Kinesis Data Stream:')
+  await _pushOrderToKinesisDataStream(order)
 }
 
 module.exports.fulfillOrder = async (orderId, fulfillmentId) => {
@@ -39,11 +36,18 @@ module.exports.fulfillOrder = async (orderId, fulfillmentId) => {
     }
   }
 
-  dynamo.update(params).promise().then((data) => {
-    console.log('Update success: ', data)
-  }).catch((err) => {
-    console.log('Err: ', err)
-  })
+  await dynamo.update(params).promise()
+
+  params = {
+    TableName: ORDER_TABLE,
+    Key: { orderId }
+  }
+
+  let order = await dynamo.get(params).promise()
+  console.log('GET ORDER: ', order)
+
+  console.log('[Order Fulfilled] Start push data to Kinesis Data Stream:')
+  await _pushOrderToKinesisDataStream({orderId, fulfillmentId})
 }
 
 async function _createOrder(order) {
@@ -52,16 +56,12 @@ async function _createOrder(order) {
     Item: order
   }
 
-  return dynamo.put(orderRecord).promise().then((dynamoErr, dynamoData) => {
-    console.log('ERR: ', dynamoErr)
-    console.log('DATA: ', dynamoData)
-    if (_isEmpty(dynamoErr)) {
-      console.log('Order created success: ', dynamoData)
-      return dynamoData
-    } else {
-      console.log('[DynamoDB] There were erros: ', dynamoErr)
-      return null
-    }
+  return dynamo.put(orderRecord).promise().then((dynamoData) => {
+    console.log('Order created success: ', dynamoData)
+    return dynamoData
+  }).catch((dynamoErr) => {
+    console.log('[DynamoDB] There were erros: ', dynamoErr)
+    return null
   })
 }
 
@@ -72,20 +72,9 @@ async function _pushOrderToKinesisDataStream(order) {
     StreamName: ORDER_STREAM
   }
 
-  return kinesis.putRecord(orderData).promise().then((kinesisErr, kinesisData) => {
-    if (_isEmpty(kinesisErr)) {
-      console.log('Push data to KDS success: ', kinesisData)
-    } else {
-      console.log('[Kinesis] There were errors: ', kinesisErr)
-    }
+  return kinesis.putRecord(orderData).promise().then((kinesisData) => {
+    console.log('Push data to KDS success: ', kinesisData)
+  }).catch((kinesisErr) => {
+    console.log('[Kinesis] There were errors: ', kinesisErr)
   })
-}
-
-function _isEmpty(obj) {
-  for(var key in obj) {
-    if(obj.hasOwnProperty(key)) {
-      return false
-    }
-  }
-  return true
 }
