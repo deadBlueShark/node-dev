@@ -2,18 +2,19 @@
 
 const orderManager = require('./model/order')
 
+/*
+order params sample
+{
+  "customer": "Le Chi Nguyen",
+  "address": "85A PVD, DN",
+  "coupon": "APFREE",
+  "items": [
+    { "name": "Pizza", "amount": 3 }
+  ]
+}
+*/
 module.exports.createOrder = async event => {
   let order = orderManager.create(JSON.parse(event.body))
-
-  // let orderParamSample = {
-  //   customer: 'Le Chi Nguyen',
-  //   address: '85A PVD, DN',
-  //   coupon: 'APFREE',
-  //   items: [
-  //     { name: 'Pizza', amount: 3 }
-  //   ]
-  // }
-
   await orderManager.placeOrder(order)
 
   return {
@@ -22,6 +23,10 @@ module.exports.createOrder = async event => {
   }
 }
 
+/*
+fulfil order params sample
+{ "orderId": "44bd9sd", "fulfillmentId": "323" }
+*/
 module.exports.fulfillOrder = async event => {
   let params = JSON.parse(event.body)
   let orderId = params.orderId

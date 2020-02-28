@@ -10,8 +10,8 @@ fulfillOrder:
     - http:
         path: order/fulfill
         method: patch
-notifyCakeProducer:
-  handler: kinesisHandler.notifyCakeProducer
+notifyCakeProducerOrDeliveryCompany:
+  handler: kinesisHandler.notifyCakeProducerOrDeliveryCompany
   events:
     - stream:
         type: kinesis

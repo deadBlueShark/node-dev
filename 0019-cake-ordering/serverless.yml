@@ -21,10 +21,23 @@ provider:
         - kinesis:PutRecord
       Resource:
         - arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/${self:provider.environment.ORDER_STREAM}
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource:
+        - "*"
+      Condition:
+        StringEquals:
+          ses:FromAddress:
+            - ${self:provider.environment.CAKE_ORDER_EMAIL}
   environment:
     ORDER_TABLE: cake-orders
     ORDER_STREAM: order-events
     LAMBDA_TIMEOUT: 900
+    SES_REGION: us-east-1
+    CAKE_PRODUCER_EMAIL: endlesslovefor123@gmail.com
+    CAKE_ORDER_EMAIL: nguyenlc@runsystem.net
+    DELIVERY_COMPANY_EMAIL: xspacechinguyen@gmail.com
 functions:
   - ${file(./config-modules/functions.yml)}
 resources:

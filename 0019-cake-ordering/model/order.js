@@ -1,9 +1,9 @@
 'use strict'
 
-const { uuid } = require('uuidv4')
 const AWS = require('aws-sdk')
-const dynamo = new AWS.DynamoDB.DocumentClient()
-const kinesis = new AWS.Kinesis()
+let { uuid } = require('uuidv4')
+let dynamo = new AWS.DynamoDB.DocumentClient()
+let kinesis = new AWS.Kinesis()
 
 const ORDER_TABLE = process.env.ORDER_TABLE
 const ORDER_STREAM = process.env.ORDER_STREAM
